@@ -1,0 +1,67 @@
+/* ============================================
+   InputField.css
+   ============================================ */
+
+.input-form {
+  display: flex;
+  gap: var(--spacing-sm);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-xl) auto;
+}
+
+.input-field {
+  flex: 1;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1rem;
+  border: 2px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 48px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-muted);
+}
+
+.submit-button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  min-height: 48px;
+  min-width: 80px;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+@media (min-width: 768px) {
+  .input-form {
+    max-width: 700px;
+    margin-bottom: var(--spacing-2xl);
+  }
+}

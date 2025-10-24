@@ -1,0 +1,19 @@
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .submit-button,
+  .todo-action-icon {
+    display: none;
+  }
+  
+  .todo-field-container {
+    flex-direction: column;
+  }
+  
+  .todo-item {
+    border: 1px solid #000;
+    box-shadow: none;
+  }
+}

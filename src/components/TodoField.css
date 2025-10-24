@@ -1,0 +1,69 @@
+/* ============================================
+   TodoField.css
+   ============================================ */
+
+.todo-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.todo-list {
+  background-color: var(--color-white);
+  border: 2px solid var(--color-neutral-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
+  min-height: 200px;
+}
+
+.todo-list:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.todo-list.active-list:hover {
+  border-color: var(--color-primary);
+}
+
+.todo-list.completed-list:hover {
+  border-color: var(--color-success);
+}
+
+.todo-list.drag-over {
+  border-color: var(--color-success);
+  background-color: var(--color-success-light);
+}
+
+.todo-list-title {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-neutral-border);
+}
+
+.todo-list-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--spacing-2xl);
+  font-style: italic;
+}
+
+@media (min-width: 768px) {
+  .todo-field-container {
+    flex-direction: row;
+    gap: var(--spacing-xl);
+  }
+  
+  .todo-list {
+    flex: 1;
+    min-height: 400px;
+  }
+  
+  .todo-list-title {
+    font-size: 1.75rem;
+  }
+}
