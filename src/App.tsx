@@ -1,37 +1,61 @@
 import InputField from './components/InputField'
 import './App.css'
 import TodoField from './components/TodoField';
-import { useReducer, useState } from 'react';
+import { useReducer, useState, useEffect } from 'react';
 import { todoReducer, initialState } from './todoReducer';
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent, DragOverlay, type DragStartEvent } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { arrayMove } from '@dnd-kit/sortable';
 // import type { todoData } from './types/Module';
 import SingleTodo from './components/SingleTodo';
-
+import TutorialDialog from './components/TutorialDialog';
 
 function App() {
   const [state, dispatch] = useReducer(todoReducer, initialState);
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // The state variables are now accessed via the state object
   const { todoInput, todoList } = state;
 
   const activeList = todoList.filter(t => !t.isDone);
   const completedList = todoList.filter(t => t.isDone);
   
-  // Find the currently dragging todo
   const activeTodo = todoList.find(t => t.id === activeId);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Show tutorial when first item is added
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('todo-tutorial-seen');
+    
+    if (!tutorialSeen && todoList.length === 1) {
+      // Small delay to let the item render first
+      const timer = setTimeout(() => {
+        setShowTutorial(true);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [todoList.length]);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (todoInput) {
-      // Dispatch the ADD_TODO action
       dispatch({ type: 'ADD_TODO', payload: null });
     }
   }
 
-  // Helper function to dispatch the SET_INPUT action
   const setTodoInput = (value: string) => {
     dispatch({ type: 'SET_INPUT', payload: value });
   }
@@ -45,24 +69,19 @@ function App() {
 
     console.log('Drag End - Active ID:', active.id, 'Over ID:', over?.id);
 
-    setActiveId(null); // Reset active dragging item
+    setActiveId(null);
 
-    if (!over) return; // Dropped outside container
+    if (!over) return;
 
-    const draggedId = active.id as number; // Id of item being dragged
-    const overId = over.id as string | number; // Can be container ID or item ID
+    const draggedId = active.id as number;
+    const overId = over.id as string | number;
 
-    // Find the dragged item and determine its current status
     const draggedItem = todoList.find(t => t.id === draggedId);
     if (!draggedItem) return;
 
     console.log('Dragged item isDone:', draggedItem.isDone, 'Over:', overId);
 
-    // SCENE 1: Moving between Active and Completed list
-    
-    // If dropped on the completed-list container or a completed item
     if (overId === 'completed-list' || typeof overId === 'number' && completedList.some(t => t.id === overId)) {
-      // If item is currently active (not done), mark it as done
       if (!draggedItem.isDone) {
         console.log('Moving to completed');
         dispatch({ type: 'TOGGLE_DONE', payload: draggedId });
@@ -70,9 +89,7 @@ function App() {
       }
     }
 
-    // If dropped on the active-list container or an active item
     if (overId === 'active-list' || typeof overId === 'number' && activeList.some(t => t.id === overId)) {
-      // If item is currently completed (done), mark it as not done
       if (draggedItem.isDone) {
         console.log('Moving to active');
         dispatch({ type: 'TOGGLE_DONE', payload: draggedId });
@@ -80,12 +97,9 @@ function App() {
       }
     }
 
-    // SCENE 2: Sorting within the same list
-    // Only if dropped on another item (not container)
     if (typeof overId === 'number') {
       const targetItem = todoList.find(t => t.id === overId);
       
-      // Both items must be in the same status (both active or both completed)
       if (targetItem && draggedItem.isDone === targetItem.isDone) {
         const originalPos = todoList.findIndex(t => t.id === draggedId);
         const newPos = todoList.findIndex(t => t.id === overId);
@@ -99,9 +113,18 @@ function App() {
     }
   };
 
+  const handleDismissTutorial = () => {
+    setShowTutorial(false);
+  };
+
+  const handleDontShowAgain = () => {
+    localStorage.setItem('todo-tutorial-seen', 'true');
+    setShowTutorial(false);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -118,7 +141,12 @@ function App() {
       >
         <div>
           <InputField todoInput={todoInput} setTodoInput={setTodoInput} submitHandler={handleAdd}/>
-          <TodoField activeList={activeList} dispatch={dispatch} completedList={completedList}/>
+          <TodoField 
+            activeList={activeList} 
+            dispatch={dispatch} 
+            completedList={completedList}
+            highlightFirst={showTutorial}
+          />
         </div>
         
         <DragOverlay dropAnimation={{
@@ -137,6 +165,13 @@ function App() {
           ) : null}
         </DragOverlay>
       </DndContext>
+
+      <TutorialDialog 
+        isVisible={showTutorial}
+        onDismiss={handleDismissTutorial}
+        onDontShowAgain={handleDontShowAgain}
+        isMobile={isMobile}
+      />
     </div>
   )
 }

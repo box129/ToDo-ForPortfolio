@@ -13,9 +13,10 @@ type Props = {
    todo: todoData;
    dispatch: React.Dispatch<TodoAction>;
    isOverlay?: boolean;
+   highlight?: boolean;
 }
 
-const SingleTodo = ({ id, todo, dispatch, isOverlay = false }: Props) => {
+const SingleTodo = ({ id, todo, dispatch, isOverlay = false, highlight = false }: Props) => {
     const {attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id,
         disabled: isOverlay,
@@ -114,7 +115,7 @@ const SingleTodo = ({ id, todo, dispatch, isOverlay = false }: Props) => {
             <form className="todo-item" onSubmit={handleSubmit}>
                 <div className="todo-main-row">
                     <span 
-                        className="todo-drag-handle" 
+                        className={`todo-drag-handle ${highlight ? 'highlight-pulse' : ''}`}
                         {...attributes} 
                         {...listeners}
                     >
