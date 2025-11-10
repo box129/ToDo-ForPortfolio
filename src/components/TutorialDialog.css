@@ -1,18 +1,13 @@
-/* Tutorial Overlay */
-.tutorial-overlay {
+/* Tutorial Backdrop - subtle dim */
+.tutorial-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: var(--spacing-lg);
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
     animation: fadeIn 0.3s ease-in-out;
-    backdrop-filter: blur(2px);
 }
 
 @keyframes fadeIn {
@@ -24,161 +19,117 @@
     }
 }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
-
-.tutorial-overlay.fade-out {
-    animation: fadeOut 0.3s ease-in-out forwards;
-}
-
-/* Tutorial Dialog */
-.tutorial-dialog {
+/* Tooltip Container */
+.tutorial-tooltip {
+    position: fixed;
     background-color: var(--color-white);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease-out;
-    text-align: center;
+    padding: var(--spacing-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    max-width: 320px;
+    animation: tooltipSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes slideUp {
+.tutorial-tooltip.desktop {
+    transform-origin: left center;
+}
+
+.tutorial-tooltip.mobile {
+    transform-origin: top center;
+    max-width: calc(100vw - 32px);
+}
+
+@keyframes tooltipSlideIn {
     from {
-        transform: translateY(30px);
         opacity: 0;
+        transform: scale(0.9) translateY(-10px);
     }
     to {
-        transform: translateY(0);
         opacity: 1;
+        transform: scale(1) translateY(0);
     }
 }
 
-.tutorial-icon {
-    font-size: 3rem;
-    margin-bottom: var(--spacing-md);
+/* Arrow pointing to the item */
+.tutorial-tooltip-arrow {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-white);
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.tutorial-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-md);
+.tutorial-tooltip.desktop .tutorial-tooltip-arrow {
+    left: -8px;
+    top: 24px;
 }
 
-.tutorial-message {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-xl);
+.tutorial-tooltip.mobile .tutorial-tooltip-arrow {
+    left: 24px;
+    top: -8px;
 }
 
-/* Visual Demo */
-.tutorial-visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-    padding: var(--spacing-lg);
-    background-color: var(--color-neutral-bg);
-    border-radius: var(--radius-md);
+/* Content */
+.tutorial-tooltip-content {
+    position: relative;
+    z-index: 1;
 }
 
-.drag-handle-demo {
+.tutorial-header {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
-    background-color: var(--color-white);
-    border: 2px solid var(--color-neutral-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-sm);
 }
 
-.demo-handle {
+.tutorial-emoji {
     font-size: 1.5rem;
-    color: var(--color-text-muted);
-    animation: pulse 2s ease-in-out infinite;
-    background-color: #fef08a;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
-    box-shadow: 0 0 0 0 rgba(254, 240, 138, 0.7);
 }
 
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 0 rgba(254, 240, 138, 0.7);
-        background-color: #fef08a;
-    }
-    50% {
-        box-shadow: 0 0 0 8px rgba(254, 240, 138, 0);
-        background-color: #fde047;
-    }
-}
-
-.demo-text {
-    font-size: 0.95rem;
+.tutorial-tooltip-title {
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--color-text-primary);
+    margin: 0;
 }
 
-.tutorial-arrow {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    animation: bounce 1s ease-in-out infinite;
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(8px);
-    }
-}
-
-.tutorial-hint {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-primary);
-    padding: var(--spacing-xs) var(--spacing-md);
-    background-color: rgba(59, 130, 246, 0.1);
-    border-radius: var(--radius-sm);
+.tutorial-tooltip-message {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
 }
 
 /* Checkbox */
-.tutorial-checkbox {
-    margin-bottom: var(--spacing-lg);
+.tutorial-tooltip-checkbox {
+    margin-bottom: var(--spacing-md);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-neutral-border);
 }
 
-.tutorial-checkbox label {
+.tutorial-tooltip-checkbox label {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--color-text-secondary);
 }
 
-.tutorial-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
+.tutorial-tooltip-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
     cursor: pointer;
     accent-color: var(--color-primary);
 }
 
 /* Button */
-.tutorial-button {
+.tutorial-tooltip-button {
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-xl);
-    font-size: 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-white);
     background-color: var(--color-primary);
@@ -188,36 +139,20 @@
     transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.tutorial-button:hover {
+.tutorial-tooltip-button:hover {
     background-color: var(--color-primary-hover);
-    transform: translateY(-1px);
 }
 
-.tutorial-button:active {
-    transform: translateY(0);
+.tutorial-tooltip-button:active {
+    transform: scale(0.98);
 }
 
-/* Mobile Adjustments */
+/* Responsive adjustments */
 @media (max-width: 767px) {
-    .tutorial-dialog {
-        padding: var(--spacing-lg);
-        max-width: 90vw;
-    }
-
-    .tutorial-title {
-        font-size: 1.5rem;
-    }
-
-    .tutorial-message {
-        font-size: 0.95rem;
-    }
-
-    .tutorial-visual {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-
-    .tutorial-arrow {
-        transform: rotate(90deg);
+    .tutorial-tooltip {
+        left: 16px !important;
+        right: 16px;
+        max-width: none;
+        width: calc(100% - 32px);
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef } from 'react';
 import type { todoData } from '../types/Module';
 import { MdEdit, MdDragIndicator } from "react-icons/md";
 import { TiTick } from "react-icons/ti";
@@ -16,7 +16,7 @@ type Props = {
    highlight?: boolean;
 }
 
-const SingleTodo = ({ id, todo, dispatch, isOverlay = false, highlight = false }: Props) => {
+const SingleTodo = forwardRef<HTMLDivElement, Props>(({ id, todo, dispatch, isOverlay = false, highlight = false }, ref) => {
     const {attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id,
         disabled: isOverlay,
@@ -109,7 +109,14 @@ const SingleTodo = ({ id, todo, dispatch, isOverlay = false, highlight = false }
     return (
         <div 
             className="todo-item-wrapper"
-            ref={setNodeRef} 
+            ref={(node) => {
+                setNodeRef(node);
+                if (typeof ref === 'function') {
+                    ref(node);
+                } else if (ref) {
+                    ref.current = node;
+                }
+            }}
             style={style}
         >
             <form className="todo-item" onSubmit={handleSubmit}>
@@ -154,6 +161,8 @@ const SingleTodo = ({ id, todo, dispatch, isOverlay = false, highlight = false }
             </form>
         </div>
     )
-}
+});
+
+SingleTodo.displayName = 'SingleTodo';
 
 export default SingleTodo;

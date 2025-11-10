@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {  } from 'react'
 import type { todoData } from '../types/Module';
 import SingleTodo from './SingleTodo';
 import type { TodoAction } from '../todoReducer';
@@ -11,9 +11,10 @@ interface Props {
     dispatch: React.Dispatch<TodoAction>;
     completedList: todoData[];
     highlightFirst?: boolean;
+    firstItemRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-const TodoField: React.FC<Props> = ({ activeList, dispatch, completedList, highlightFirst = false }) => {
+const TodoField: React.FC<Props> = ({ activeList, dispatch, completedList, highlightFirst = false, firstItemRef }) => {
     const { setNodeRef: setActiveDropRef } = useDroppable({ id: 'active-list' });
     const { setNodeRef: setCompletedDropRef } = useDroppable({ id: 'completed-list' });
     
@@ -32,6 +33,7 @@ const TodoField: React.FC<Props> = ({ activeList, dispatch, completedList, highl
                                 todo={t} 
                                 dispatch={dispatch}
                                 highlight={highlightFirst && index === 0}
+                                ref={index === 0 ? firstItemRef : undefined}
                             />
                         ))}
                     </SortableContext>

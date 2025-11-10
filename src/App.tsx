@@ -1,7 +1,7 @@
 import InputField from './components/InputField'
 import './App.css'
 import TodoField from './components/TodoField';
-import { useReducer, useState, useEffect } from 'react';
+import { useReducer, useState, useEffect, useRef } from 'react';
 import { todoReducer, initialState } from './todoReducer';
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent, DragOverlay, type DragStartEvent } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -15,6 +15,7 @@ function App() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const firstItemRef = useRef<HTMLDivElement>(null);
 
   const { todoInput, todoList } = state;
 
@@ -40,7 +41,6 @@ function App() {
     const tutorialSeen = localStorage.getItem('todo-tutorial-seen');
     
     if (!tutorialSeen && todoList.length === 1) {
-      // Small delay to let the item render first
       const timer = setTimeout(() => {
         setShowTutorial(true);
       }, 500);
@@ -67,8 +67,6 @@ function App() {
   const handleDragEnd = (e: DragEndEvent) => {
     const {active, over} = e;
 
-    console.log('Drag End - Active ID:', active.id, 'Over ID:', over?.id);
-
     setActiveId(null);
 
     if (!over) return;
@@ -79,11 +77,8 @@ function App() {
     const draggedItem = todoList.find(t => t.id === draggedId);
     if (!draggedItem) return;
 
-    console.log('Dragged item isDone:', draggedItem.isDone, 'Over:', overId);
-
     if (overId === 'completed-list' || typeof overId === 'number' && completedList.some(t => t.id === overId)) {
       if (!draggedItem.isDone) {
-        console.log('Moving to completed');
         dispatch({ type: 'TOGGLE_DONE', payload: draggedId });
         return;
       }
@@ -91,7 +86,6 @@ function App() {
 
     if (overId === 'active-list' || typeof overId === 'number' && activeList.some(t => t.id === overId)) {
       if (draggedItem.isDone) {
-        console.log('Moving to active');
         dispatch({ type: 'TOGGLE_DONE', payload: draggedId });
         return;
       }
@@ -105,7 +99,6 @@ function App() {
         const newPos = todoList.findIndex(t => t.id === overId);
 
         if (originalPos !== newPos) {
-          console.log('Reordering within same list');
           const newTodoList = arrayMove(todoList, originalPos, newPos);
           dispatch({ type: 'REORDER_TODOS', payload: newTodoList });
         }
@@ -146,6 +139,7 @@ function App() {
             dispatch={dispatch} 
             completedList={completedList}
             highlightFirst={showTutorial}
+            firstItemRef={firstItemRef}
           />
         </div>
         
@@ -171,6 +165,7 @@ function App() {
         onDismiss={handleDismissTutorial}
         onDontShowAgain={handleDontShowAgain}
         isMobile={isMobile}
+        targetRef={firstItemRef}
       />
     </div>
   )
