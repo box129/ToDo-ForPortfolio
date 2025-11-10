@@ -8,7 +8,7 @@
 
 .todo-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   background-color: var(--color-white);
@@ -18,14 +18,30 @@
   min-height: 56px;
 }
 
+.todo-main-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.todo-actions-row {
+  display: flex;
+  gap: var(--spacing-xs);
+  justify-content: flex-end;
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-neutral-border);
+}
+
 .todo-drag-handle {
   cursor: grab;
   padding: var(--spacing-sm);
-  margin-right: var(--spacing-xs);
   color: var(--color-text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  touch-action: none;
 }
 
 .todo-drag-handle:active {
@@ -149,3 +165,4 @@
     font-size: 1.25rem;
   }
 }
+

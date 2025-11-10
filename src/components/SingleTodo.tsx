@@ -12,13 +12,13 @@ type Props = {
    id: number; 
    todo: todoData;
    dispatch: React.Dispatch<TodoAction>;
-   isOverlay?: boolean; // New prop to identify overlay rendering
+   isOverlay?: boolean;
 }
 
 const SingleTodo = ({ id, todo, dispatch, isOverlay = false }: Props) => {
     const {attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id,
-        disabled: isOverlay, // Disable sortable for overlay
+        disabled: isOverlay,
     });
 
     const [edit, setEdit] = useState<boolean>(false);
@@ -77,27 +77,30 @@ const SingleTodo = ({ id, todo, dispatch, isOverlay = false }: Props) => {
         transform: CSS.Transform.toString(transform),
     };
 
-    // If it's an overlay, render without drag interactions
     if (isOverlay) {
         return (
             <div className="todo-item-wrapper">
-                <form className="todo-item">
-                    <span className="todo-drag-handle">
-                        <MdDragIndicator />
-                    </span>
-                    <span className={`todo-content ${todo.isDone ? 'completed' : ''}`}>
-                        {todo.content}
-                    </span>
-                    <span className="todo-action-icon edit-icon">
-                        <MdEdit />
-                    </span>
-                    <span className="todo-action-icon delete-icon">
-                        <MdDeleteForever />
-                    </span>
-                    <span className="todo-action-icon done-icon">
-                        <TiTick />
-                    </span>
-                </form>
+                <div className="todo-item">
+                    <div className="todo-main-row">
+                        <span className="todo-drag-handle">
+                            <MdDragIndicator />
+                        </span>
+                        <span className={`todo-content ${todo.isDone ? 'completed' : ''}`}>
+                            {todo.content}
+                        </span>
+                    </div>
+                    <div className="todo-actions-row">
+                        <span className="todo-action-icon edit-icon">
+                            <MdEdit />
+                        </span>
+                        <span className="todo-action-icon delete-icon">
+                            <MdDeleteForever />
+                        </span>
+                        <span className="todo-action-icon done-icon">
+                            <TiTick />
+                        </span>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -109,40 +112,44 @@ const SingleTodo = ({ id, todo, dispatch, isOverlay = false }: Props) => {
             style={style}
         >
             <form className="todo-item" onSubmit={handleSubmit}>
-                <span 
-                    className="todo-drag-handle" 
-                    {...attributes} 
-                    {...listeners}
-                >
-                    <MdDragIndicator />
-                </span>
-
-                {edit ? (
-                    <input
-                        type='text'
-                        className="todo-edit-input"
-                        value={textEdit}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setTextEdit(e.target.value);
-                        }}
-                        onBlur={handleSubmit}
-                        ref={inputRef}
-                    />
-                ) : (
-                    <span className={`todo-content ${todo.isDone ? 'completed' : ''}`}>
-                        {todo.content}
+                <div className="todo-main-row">
+                    <span 
+                        className="todo-drag-handle" 
+                        {...attributes} 
+                        {...listeners}
+                    >
+                        <MdDragIndicator />
                     </span>
-                )}
-            
-                <span className="todo-action-icon edit-icon" onClick={handleEdit}>
-                    <MdEdit />
-                </span>
-                <span className="todo-action-icon delete-icon" onClick={(e) => handleDelete(e, todo.id)}>
-                    <MdDeleteForever />
-                </span>
-                <span className="todo-action-icon done-icon" onClick={(e) => handleDone(e, todo.id)}>
-                    <TiTick />
-                </span>
+
+                    {edit ? (
+                        <input
+                            type='text'
+                            className="todo-edit-input"
+                            value={textEdit}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                setTextEdit(e.target.value);
+                            }}
+                            onBlur={handleSubmit}
+                            ref={inputRef}
+                        />
+                    ) : (
+                        <span className={`todo-content ${todo.isDone ? 'completed' : ''}`}>
+                            {todo.content}
+                        </span>
+                    )}
+                </div>
+
+                <div className="todo-actions-row">
+                    <span className="todo-action-icon edit-icon" onClick={handleEdit}>
+                        <MdEdit />
+                    </span>
+                    <span className="todo-action-icon delete-icon" onClick={(e) => handleDelete(e, todo.id)}>
+                        <MdDeleteForever />
+                    </span>
+                    <span className="todo-action-icon done-icon" onClick={(e) => handleDone(e, todo.id)}>
+                        <TiTick />
+                    </span>
+                </div>
             </form>
         </div>
     )
