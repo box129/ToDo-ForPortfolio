@@ -41,8 +41,8 @@ You need to have **Node.js** and **npm** (or yarn/pnpm) installed.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [Your Repository URL]
-    cd [Your Project Folder Name]
+    git clone https://github.com/box129/ToDo-ForPortfolio.git
+cd ToDo-ForPortfolio
     ```
 2.  **Install dependencies:**
     ```bash
